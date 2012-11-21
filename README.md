@@ -1,4 +1,4 @@
-JIPP - Java In Pure Python
-==========================
+JIPPY - Java In Pure Python
+===========================
 
 
