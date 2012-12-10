@@ -621,7 +621,7 @@ def _gen_method_repr(mname, args, prefix=''):
     res += prefix + ' ' * 4 + 'ctypes.POINTER(ctypes.CFUNCTYPE(\n'
     res += ''.join(prefix + ' ' * 8 + (_translate_type(typen) + ',').ljust(32) + ' # ' + name + '\n'
                     for typen, name in args)
-    res += prefix + ' ' * 4 + ')\n'
+    res += prefix + ' ' * 4 + '))\n'
     res += prefix + '),'
 
     return res

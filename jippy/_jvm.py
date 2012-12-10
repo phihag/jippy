@@ -10,7 +10,7 @@ import tempfile
 import threading
 
 from . import _util
-from .jvm_intf import *
+from ._jvm_intf import *
 
 _JVM_DOWNLOAD_URL = 'http://www.java.com/en/download/manual.jsp?locale=en'
 
