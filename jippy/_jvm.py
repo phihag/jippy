@@ -12,6 +12,7 @@ import threading
 from . import _util
 from ._jvm_intf import *
 
+
 _JVM_DOWNLOAD_URL = 'http://www.java.com/en/download/manual.jsp?locale=en'
 
 # Mapping from Python architecture (platform.machine() to Java's)
@@ -69,7 +70,6 @@ def _find_libjvm_so(loc):
     ]
     for subdir in subdirs:
         fn = os.path.join(loc, subdir, 'libjvm.so')
-        print(fn)
         if os.path.isfile(fn):
             return fn
     return None
@@ -188,17 +188,23 @@ class JVM(object):
             raise OSError('Cannot find JVM in specified path. '
               'Call find_jvm_location(..., auto_install=True) to download one.')
         self._dll = ctypes.cdll.LoadLibrary(self._dllPath)
+        jvm = JavaVM()
+        env = JNIEnv()
         vm_args = _JavaVMInitArgs()
         vm_args.version = 0x00010002
         res = self._dll.JNI_GetDefaultJavaVMInitArgs(ctypes.pointer(vm_args))
         if res != 0:
             raise JVMError('JVM is too old, update to 1.2+')
+        self._dll.JNI_CreateJavaVM(
+            #(&jvm, &env, ctypes.pointer(vm_args)
+            )
         #self._dll.
         # TODO boot em up
 
     def call(self, name, **args):
         if not self.started and self._autostart:
             self.start()
+        assert self.started
         # TODO attach thread if necessary
         # TODO actually call
         # TODO handle result
