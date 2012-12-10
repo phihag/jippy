@@ -618,11 +618,11 @@ def _gen_method_repr(mname, args, prefix=''):
     if any(tname in ('...', 'va_list') for tname,name in args):
         return prefix + '# ' + mname + ' skipped because of varargs'
     res = prefix + '(' + repr(mname) + ',\n'
-    res += ' ' * 4 + 'ctypes.POINTER(ctypes.CFUNCTYPE(\n'
+    res += prefix + ' ' * 4 + 'ctypes.POINTER(ctypes.CFUNCTYPE(\n'
     res += ''.join(prefix + ' ' * 8 + (_translate_type(typen) + ',').ljust(32) + ' # ' + name + '\n'
                     for typen, name in args)
-    res += ' ' * 4 + ')\n'
-    res += '),'
+    res += prefix + ' ' * 4 + ')\n'
+    res += prefix + '),'
 
     return res
 
@@ -648,7 +648,7 @@ def _extract_arg(arg_str):
     assert '*' not in name
     return (p + typen, name)
 
-def gen_ctypes(s):
+def gen_ctypes(s, prefix):
     res = ''
     for mdef in s.split(';'):
         if not mdef.strip():
@@ -665,10 +665,15 @@ def gen_ctypes(s):
 
         args = list(map(_extract_arg, m.group('args').split(',')))
 
-        mrepr = _gen_method_repr(m.group('name'), args)
+        mrepr = _gen_method_repr(m.group('name'), args, prefix)
         res += mrepr + '\n'
     return res
 
 
 if __name__ == '__main__':
-    print(gen_ctypes(JNINativeInterface))
+    import sys
+    try:
+        pfx = sys.argv[1]
+    except IndexError:
+        pfx = ''
+    print(gen_ctypes(JNINativeInterface, pfx))
